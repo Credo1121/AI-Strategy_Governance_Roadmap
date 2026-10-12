@@ -1,0 +1,102 @@
+[
+  {
+    "id": "16a563d3-144e-4b8b-b8d4-7b3d3cde97a3",
+    "revision": 0,
+    "context": {
+      "name": "QA · Strategieworkshop",
+      "profile": "group",
+      "objective": "",
+      "audience": "c-level",
+      "focus": "hardware"
+    },
+    "answers": {},
+    "selectedOptions": [],
+    "updatedAt": "2026-10-12T07:21:41.663Z",
+    "synthetic": true
+  },
+  {
+    "id": "2dcec62b-3f8b-41a1-a9fc-ab3a0dabf039",
+    "revision": 1,
+    "context": {
+      "name": "QA · Strategieworkshop",
+      "profile": "group",
+      "objective": "",
+      "audience": "c-2",
+      "focus": "sales"
+    },
+    "answers": {
+      "hardware.ambition": "Hardware: Kundenanforderungen nachvollziehbar in technische Entscheidungen übersetzen.",
+      "software.ambition": "Software: End-to-End-Lieferfluss einschließlich Review und Tests untersuchen.",
+      "sales.ambition": "Vertrieb: belegte Kundenbedürfnisse von internen Verkaufshypothesen trennen."
+    },
+    "selectedOptions": [],
+    "updatedAt": "2026-10-12T07:24:39.320Z",
+    "synthetic": true
+  },
+  {
+    "id": "3bbf14d2-7462-457f-ae35-55266653865e",
+    "revision": 4,
+    "context": {
+      "name": "QA · Strategieworkshop",
+      "profile": "group",
+      "objective": "",
+      "audience": "c-2",
+      "focus": "hardware"
+    },
+    "answers": {
+      "hardware.ambition": "Parallel gespeicherte Änderung",
+      "software.ambition": "Software: End-to-End-Lieferfluss einschließlich Review und Tests untersuchen.",
+      "sales.ambition": "Vertrieb: belegte Kundenbedürfnisse von internen Verkaufshypothesen trennen."
+    },
+    "selectedOptions": [
+      "engineering",
+      "sales-intelligence"
+    ],
+    "updatedAt": "2026-10-12T07:25:53.891Z",
+    "synthetic": true
+  },
+  {
+    "id": "8c298eef-9014-4bb0-b545-e247c01fa69d",
+    "revision": 4,
+    "context": {
+      "name": "QA · Strategieworkshop",
+      "profile": "group",
+      "objective": "",
+      "audience": "c-2",
+      "focus": "hardware"
+    },
+    "answers": {
+      "hardware.ambition": "Parallel gespeicherte Änderung",
+      "software.ambition": "Software: End-to-End-Lieferfluss einschließlich Review und Tests untersuchen.",
+      "sales.ambition": "Vertrieb: belegte Kundenbedürfnisse von internen Verkaufshypothesen trennen."
+    },
+    "selectedOptions": [
+      "engineering",
+      "sales-intelligence"
+    ],
+    "updatedAt": "2026-10-12T07:26:42.150Z",
+    "synthetic": true
+  },
+  {
+    "id": "a4bc6906-65f0-475e-900a-65dac7a5034f",
+    "revision": 4,
+    "context": {
+      "name": "QA · Strategieworkshop",
+      "profile": "group",
+      "objective": "",
+      "audience": "c-2",
+      "focus": "hardware"
+    },
+    "answers": {
+      "hardware.ambition": "Parallel gespeicherte Änderung",
+      "software.ambition": "Software: End-to-End-Lieferfluss einschließlich Review und Tests untersuchen.",
+      "sales.ambition": "Vertrieb: belegte Kundenbedürfnisse von internen Verkaufshypothesen trennen."
+    },
+    "selectedOptions": [
+      "engineering",
+      "sales-intelligence"
+    ],
+    "updatedAt": "2026-10-12T07:32:36.251Z",
+    "synthetic": true
+  }
+]

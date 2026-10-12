@@ -1,0 +1,17 @@
+{
+  "results": [
+    "PASS: 19 Folien; 14 Hauptfolien; Sprechplan 1200 Sekunden",
+    "PASS: Navigation, Grenzen, Folienauswahl, Notizen, Quellen und Escape",
+    "PASS: beide Varianten ändern sichtbare Inhalte; 38 Desktop-Screenshots erstellt",
+    "PASS: Variante und Foliennummer über Reload erhalten",
+    "PASS: 390×844 und 1280×720 ohne horizontalen Seitenüberlauf",
+    "PASS: Druckmodus zeigt alle 19 Folien; PDF für beide Varianten erzeugt",
+    "PASS: keine externen Laufzeitrequests",
+    "PASS: beide PDFs, 19 Seiten, 16:9, Finanz- und Schlussfolieninhalte vorhanden",
+    "NOT RUN: direkte file://-Navigation durch Chromium-Administratorpolicy blockiert"
+  ],
+  "overflow": [],
+  "errors": [],
+  "html_sha256": "6bf82de78c1995ccea0716e6747bb52b307743a7e3cfa48d8c35c74965e5cdc7",
+  "timestamp_utc": "2026-10-11T18:57:16.426818+00:00"
+}

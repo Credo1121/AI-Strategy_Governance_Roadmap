@@ -1,0 +1,18 @@
+{
+  "results": [
+    "PASS: neue synthetische Demoakte über Oberfläche erstellt; ursprüngliche Akte nicht überschrieben",
+    "PASS: pro Prozess getrennte Antworten; C-Level/C-2 ändern Fragen; Speichern/Reload stellt Notizen wieder her",
+    "PASS: Optionsauswahl beeinflusst Roadmap; ungespeicherter Export gesperrt; echter Markdown-Download enthält Antworten aller drei Prozesse",
+    "PASS: Quellenprüfung/Übertragbarkeit sichtbar; Quellendialog, Escape und leere Suche geprüft",
+    "PASS: konkurrierende Speicherung → verständlicher Konflikt, lokale Eingabe erhalten, explizites Neuladen",
+    "PASS: alle sechs Bereiche in 390×844 ohne horizontalen Seitenüberlauf",
+    "PASS: API-Ausfall zeigt Fehler und Retry statt scheinbar geladener Daten",
+    "PASS: finale Screenshots nach deaktiviertem Entwicklungsindikator erneuert; ursprüngliche Demoakten unverändert"
+  ],
+  "errors": [],
+  "created_demo_id": "a4bc6906-65f0-475e-900a-65dac7a5034f",
+  "timestamp_utc": "2026-10-12T07:32:38.666308+00:00",
+  "source_fingerprint": "286ed2a112f6a4cb3c59f84ab54c503b84fab9c697c1fb0a599a76d596209aa9",
+  "final_source_fingerprint": "b7b409c22685b66d9a813402aefc7e56a6b13f8be634afa1617b035e95686149",
+  "final_screenshot_timestamp_utc": "2026-10-12T07:37:53.761161+00:00"
+}
