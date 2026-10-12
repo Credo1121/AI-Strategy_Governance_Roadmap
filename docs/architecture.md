@@ -17,3 +17,9 @@ Komponenten: Frontend für Kontext/Prozess-/Gesprächs-/Options-/Roadmap-/Quelle
 Sicherheitsgrenzen: keine echten Daten, Dienste nur 127.0.0.1, JSON-only und Originprüfung bei Mutationen, 64-KiB-Limit, validierte IDs/Felder/Längen, Request-Timeouts, keine externen Fetches aus Nutzereingaben, kein unsicheres HTML-Rendering. Fehler ohne Stacktrace. Optimistische Revisionsprüfung verhindert verlorene Änderungen; keine automatische Überschreibung bei Konflikten.
 
 Methodisches Risiko: globale Praxisbefragung nicht DAX-repräsentativ; Beratungssynthesen nicht als validierte Gesamtmethode darstellen. Status direkt im Produkt sichtbar. Entscheidungen nach ADR-002; Datenvertrag docs/contracts/strategy-workspace.md.
+
+## REQ-003 — Portfolio und Finanzierung
+
+Portfolioinitiativen und Finanzrahmen erweitern die bestehende versionierte Beratungsakte. Der gleiche atomare Revisionsschutz umfasst damit Strategie, Portfolio und Finance; eine konkurrierende Änderung überschreibt keinen Teilstand. SQLite-Migration v2 ergänzt vorhandene JSON-Akten additiv. Bestehende Strategieoptionen werden als nachvollziehbare Startinitiativen migriert; neue Akten erhalten den vollständigen Vertrag.
+
+Gebundene Mittel und nächste Tranchen werden im Frontend und Export aus den Initiativen summiert. Target, Budget, Rolling Forecast und Ist-Kosten bleiben dokumentierte Eingaben. Abweichungen erzeugen einen Gesprächshinweis, keine Sperre oder automatische Freigabe. Architekturentscheidung ADR-003; Grenzen für reale Finanzdaten, Rechte, Audit-Log und Dezimalbuchungen bleiben offen.

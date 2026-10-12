@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright, expect
 import json, datetime, hashlib
 
 ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'docs/evidence/REQ-002'
+OUT=ROOT/'docs/evidence/REQ-003'
 OUT.mkdir(parents=True,exist_ok=True)
 checks=[];created_id=None
 with sync_playwright() as p:
@@ -60,44 +60,69 @@ with sync_playwright() as p:
  page.locator('.option-card').filter(has_text='Engineering-Wissen').get_by_role('button',name='Für Untersuchung auswählen').click()
  page.locator('.option-card').filter(has_text='Kundenwissen').get_by_role('button',name='Für Untersuchung auswählen').click()
  page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'04-options-desktop.png'),full_page=True,animations='disabled')
+ nav('Portfolio & Finanzierung')
+ expect(page.get_by_role('heading',name='Evidenz finanzieren. Mittel bewusst neu entscheiden.',exact=True)).to_be_visible()
+ page.get_by_role('button',name='Aus Optionen übernehmen (2)',exact=True).click()
+ page.get_by_label('Zusätzliche Initiative',exact=True).fill('AI-gestützte Service-Triage')
+ page.locator('.manual-initiative select').select_option('shared')
+ page.get_by_role('button',name='Manuell anlegen',exact=True).click()
+ expect(page.locator('.initiative-card')).to_have_count(3)
+ page.get_by_label('Benefit Owner Initiative 1',exact=True).fill('SVP Engineering')
+ page.get_by_label('Board-Status Initiative 1',exact=True).select_option('funded')
+ page.get_by_label('Gebundene Mittel Initiative 1',exact=True).fill('450')
+ page.get_by_label('Nächste Tranche Initiative 1',exact=True).fill('180')
+ page.get_by_label('Jahrestarget',exact=True).fill('3000')
+ page.get_by_label('Genehmigtes Budget',exact=True).fill('1800')
+ page.get_by_label('Rolling Forecast',exact=True).fill('1650')
+ page.get_by_label('Ist-Kosten',exact=True).fill('320')
+ page.locator('.finance-panel textarea').fill('Nächste Tranche nur nach belegter Engineering-Evidenz und bestätigter Betriebskapazität.')
+ page.get_by_role('button',name='Änderungen speichern',exact=True).click();expect(page.get_by_text('Änderungen gespeichert.',exact=True)).to_be_visible()
+ page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'05-portfolio-desktop.png'),full_page=True,animations='disabled')
+ page.reload();expect(page.locator('#engagement')).to_be_enabled();page.select_option('#engagement',created_id)
+ nav('Portfolio & Finanzierung');expect(page.locator('.initiative-card')).to_have_count(3)
+ expect(page.get_by_label('Benefit Owner Initiative 1',exact=True)).to_have_value('SVP Engineering')
+ expect(page.get_by_label('Rolling Forecast',exact=True)).to_have_value('1650')
+ checks.append('PASS: Strategieoptionen und manuelle Initiative ins Portfolio übernommen; Finance, Board-Status und Tranchen gespeichert und nach Reload wiederhergestellt')
+ page.locator('.finance-panel textarea').fill('Nächste Tranche nach Evidenz erneut im Portfolio Board entscheiden.')
  nav('6-Wochen-Roadmap');expect(page.get_by_role('button',name='Briefing exportieren')).to_be_disabled()
  expect(page.get_by_text('Einen Anforderungs-/Wissensfall mit geprüfter Referenzantwort und zulässigen Dokumenten vorbereiten.',exact=True)).to_be_visible()
  page.get_by_role('button',name='Änderungen speichern',exact=True).click();expect(page.get_by_text('Änderungen gespeichert.',exact=True)).to_be_visible()
- page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'05-roadmap-desktop.png'),full_page=True,animations='disabled')
+ page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'06-roadmap-desktop.png'),full_page=True,animations='disabled')
  with page.expect_download() as dl:page.get_by_role('button',name='Briefing exportieren').click()
  downloaded=OUT/'briefing-test.md';dl.value.save_as(downloaded);text=downloaded.read_text()
  assert 'Hardware: Kundenanforderungen' in text and 'Software: End-to-End' in text and 'Vertrieb: belegte' in text
  assert 'Woche 6' in text and 'Offen —' in text and 'SYNTHETISCHE DEMONSTRATIONSDATEN' in text
- checks.append('PASS: Optionsauswahl beeinflusst Roadmap; ungespeicherter Export gesperrt; echter Markdown-Download enthält Antworten aller drei Prozesse')
+ assert 'Enterprise-AI-Portfolio' in text and 'SVP Engineering' in text and 'Rolling Forecast: 1.650' in text
+ checks.append('PASS: Optionsauswahl beeinflusst Roadmap; ungespeicherter Export gesperrt; echter Markdown-Download enthält Antworten, Portfolio und Finanzrahmen')
  nav('Wissen & Benchmarks');expect(page.get_by_role('heading',name='Marktsignale. Keine DAX-Benchmarks.',exact=True)).to_be_visible()
  page.get_by_role('button',name='Methodik ansehen').click();expect(page.locator('dialog').nth(1)).to_be_visible()
  expect(page.locator('dialog').nth(1)).to_contain_text('Nicht peer-reviewed')
  page.keyboard.press('Escape');expect(page.locator('dialog').nth(1)).not_to_be_visible()
  page.get_by_label('Quellen durchsuchen').fill('nichts-findbar-123');expect(page.get_by_text('Keine Quelle für diese Auswahl. Suchbegriff oder Filter ändern.',exact=True)).to_be_visible()
- page.get_by_label('Quellen durchsuchen').fill('');page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'06-library-desktop.png'),full_page=True,animations='disabled')
+ page.get_by_label('Quellen durchsuchen').fill('');page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'07-library-desktop.png'),full_page=True,animations='disabled')
  checks.append('PASS: Quellenprüfung/Übertragbarkeit sichtbar; Quellendialog, Escape und leere Suche geprüft')
  # Ausfall und Konflikt: keine unbemerkte Überschreibung oder verlorene Eingaben.
  nav('Gesprächsführung');page.get_by_role('textbox',name='Gesprächsnotiz / Antwort',exact=True).fill('Lokale ungespeicherte Änderung')
  original=page.request.get('http://127.0.0.1:3000/api/engagements/'+created_id).json()
- patch={k:original[k] for k in ['revision','context','answers','selectedOptions']};patch['answers']['hardware.ambition']='Parallel gespeicherte Änderung'
+ patch={k:original[k] for k in ['revision','context','answers','selectedOptions','initiatives','finance']};patch['answers']['hardware.ambition']='Parallel gespeicherte Änderung'
  assert page.request.patch('http://127.0.0.1:3000/api/engagements/'+created_id,data=patch).status==200
  page.get_by_role('button',name='Änderungen speichern',exact=True).click()
  expect(page.locator('.alert[role=alert]')).to_contain_text('zwischenzeitlich geändert')
  expect(page.get_by_role('textbox',name='Gesprächsnotiz / Antwort',exact=True)).to_have_value('Lokale ungespeicherte Änderung')
- page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'07-conflict-desktop.png'),full_page=True,animations='disabled')
+ page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/'08-conflict-desktop.png'),full_page=True,animations='disabled')
  page.get_by_role('button',name='Akte neu laden').click();expect(page.get_by_role('textbox',name='Gesprächsnotiz / Antwort',exact=True)).to_have_value('Parallel gespeicherte Änderung')
  checks.append('PASS: konkurrierende Speicherung → verständlicher Konflikt, lokale Eingabe erhalten, explizites Neuladen')
- for name in ['Mandat & Überblick','Wertschöpfung','Gesprächsführung','Strategische Optionen','6-Wochen-Roadmap','Wissen & Benchmarks']:
+ for name in ['Mandat & Überblick','Wertschöpfung','Gesprächsführung','Strategische Optionen','Portfolio & Finanzierung','6-Wochen-Roadmap','Wissen & Benchmarks']:
   nav(name);page.set_viewport_size({'width':390,'height':844})
   assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'),name
-  slug={'Mandat & Überblick':'overview','Wertschöpfung':'valuechain','Gesprächsführung':'conversation','Strategische Optionen':'options','6-Wochen-Roadmap':'roadmap','Wissen & Benchmarks':'library'}[name]
+  slug={'Mandat & Überblick':'overview','Wertschöpfung':'valuechain','Gesprächsführung':'conversation','Strategische Optionen':'options','Portfolio & Finanzierung':'portfolio','6-Wochen-Roadmap':'roadmap','Wissen & Benchmarks':'library'}[name]
   page.evaluate('window.scrollTo(0,0)');page.screenshot(path=str(OUT/f'mobile-{slug}.png'),full_page=True,animations='disabled')
- checks.append('PASS: alle sechs Bereiche in 390×844 ohne horizontalen Seitenüberlauf')
+ checks.append('PASS: alle sieben Bereiche in 390×844 ohne horizontalen Seitenüberlauf')
  # Fehler-/Ladezustand in eigenem Tab ohne vorhandene Akten zu verändern.
  failure=browser.new_page(viewport={'width':1440,'height':1000})
  failure.route('**/api/**',lambda route:route.fulfill(status=503,content_type='application/json',body='{"error":{"message":"Backend für Test nicht verfügbar."}}'))
  failure.goto('http://127.0.0.1:3000');expect(failure.locator('.alert[role=alert]')).to_contain_text('Backend für Test nicht verfügbar')
- failure.evaluate('window.scrollTo(0,0)');failure.screenshot(path=str(OUT/'08-error-desktop.png'),full_page=True,animations='disabled');failure.close()
+ failure.evaluate('window.scrollTo(0,0)');failure.screenshot(path=str(OUT/'09-error-desktop.png'),full_page=True,animations='disabled');failure.close()
  checks.append('PASS: API-Ausfall zeigt Fehler und Retry statt scheinbar geladener Daten')
  assert not errors,errors
  browser.close()

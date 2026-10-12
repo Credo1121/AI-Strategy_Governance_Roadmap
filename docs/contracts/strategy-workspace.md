@@ -1,4 +1,4 @@
-# Datenvertrag — REQ-002
+# Datenvertrag — REQ-002 / REQ-003
 
 Schemaquelle: packages/shared/src/contracts.ts (Zod; TypeScript-Typen daraus abgeleitet).
 
@@ -6,10 +6,14 @@ Alle API-Routen unter /api; JSON, außer Markdown-Export. Keine Credentials erfo
 
 GET /health → {status:"ok",mode:"demo"}; GET /catalog → unveränderlicher Methoden-/Quellen-/Prozesskatalog.
 GET /engagements → Aktenliste; POST /engagements → {name,profile}; 201 neue synthetische Akte mit Version 0.
-GET /engagements/:id → vollständige Akte; PATCH → {revision,context,answers,selectedOptions}, jeweils volle editierbare Felder. context: name,profile,objective,audience,focus. answers: Record bekannter Prozess-/Frage-IDs (z. B. hardware.ambition; 18 erlaubte Schlüssel) → Text, max. 4000 Zeichen. selectedOptions: eindeutige bekannte IDs.
+GET /engagements/:id → vollständige Akte; PATCH → {revision,context,answers,selectedOptions,initiatives,finance}, jeweils volle editierbare Felder. context: name,profile,objective,audience,focus. answers: Record bekannter Prozess-/Frage-IDs (z. B. hardware.ambition; 18 erlaubte Schlüssel) → Text, max. 4000 Zeichen. selectedOptions: eindeutige bekannte IDs.
+
+initiatives: maximal 100 eindeutige Objekte. Felder: UUID, Titel 2–120 Zeichen, origin manual|option, bei option eine eindeutige bekannte optionId, focus hardware|software|sales|shared, Owner bis 100 Zeichen, Wirkungshypothese/Evidenz/Risiko je bis 1200 Zeichen, status candidate|validate|funded|scale|hold|stop sowie nichtnegative committed/nextTranche bis 1 Mrd. in Tsd. EUR. Eine Strategieoption höchstens einmal je Akte.
+
+finance: Geschäftsjahr 2020–2100, Währung EUR, nichtnegative target/budget/forecast/actuals bis 1 Mrd. in Tsd. EUR und reallocationNote bis 1500 Zeichen. Gebundene Mittel und nächste Tranchen werden aus initiatives summiert, nicht separat gespeichert.
 revision: nichtnegative Integer; DB-Update WHERE id AND revision atomar, erfolgreich revision+1. Veralteter Stand → 409 CONFLICT, keine automatische Wiederholung. Frontend bietet Neuladen statt fremde Daten zu überschreiben.
 GET /engagements/:id/export → text/markdown; nur gespeicherter Stand. UI verlangt Speichern vor Export.
 
 Fehler: {error:{code,message,requestId}}. 400 VALIDATION/BAD_JSON; 404 NOT_FOUND; 409 CONFLICT; 413 TOO_LARGE; 415 UNSUPPORTED_MEDIA_TYPE; 403 ORIGIN; 500 INTERNAL, keine internen Details. Zod strict object, maximal 64 KiB, keine unbeschränkten externen Fetches, kein HTML aus Antworten.
 
-Roadmap ist eine transparente Beratungsableitung aus gespeicherten ausgewählten Optionen und allgemeinen Wochenaufgaben, keine generative Empfehlung. Alle Beispielakten und ihre Ausgangsangaben synthetisch. Kein Mandanten-/Rechteversprechen im Demo-Modus.
+Roadmap und Portfolioimpulse sind transparente Beratungsableitungen aus gespeicherten Eingaben, keine generative Empfehlung, automatische Priorisierung oder Investitionsfreigabe. Alle Beispielakten und ihre Ausgangsangaben synthetisch. Kein Mandanten-/Rechteversprechen im Demo-Modus.

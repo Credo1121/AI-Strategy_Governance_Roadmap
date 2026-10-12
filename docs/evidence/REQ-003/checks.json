@@ -1,0 +1,16 @@
+{
+  "results": [
+    "PASS: neue synthetische Demoakte über Oberfläche erstellt; ursprüngliche Akte nicht überschrieben",
+    "PASS: pro Prozess getrennte Antworten; C-Level/C-2 ändern Fragen; Speichern/Reload stellt Notizen wieder her",
+    "PASS: Strategieoptionen und manuelle Initiative ins Portfolio übernommen; Finance, Board-Status und Tranchen gespeichert und nach Reload wiederhergestellt",
+    "PASS: Optionsauswahl beeinflusst Roadmap; ungespeicherter Export gesperrt; echter Markdown-Download enthält Antworten, Portfolio und Finanzrahmen",
+    "PASS: Quellenprüfung/Übertragbarkeit sichtbar; Quellendialog, Escape und leere Suche geprüft",
+    "PASS: konkurrierende Speicherung → verständlicher Konflikt, lokale Eingabe erhalten, explizites Neuladen",
+    "PASS: alle sieben Bereiche in 390×844 ohne horizontalen Seitenüberlauf",
+    "PASS: API-Ausfall zeigt Fehler und Retry statt scheinbar geladener Daten"
+  ],
+  "errors": [],
+  "created_demo_id": "fe39270b-5c52-4e8c-8535-44855a4d1bd4",
+  "timestamp_utc": "2026-10-12T08:51:15.494650+00:00",
+  "source_fingerprint": "3f5ad5e2c15f2258b4c2f80d3d73924e39c6b97727008106fdabf02baf926ee9"
+}
