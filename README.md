@@ -2,6 +2,14 @@
 
 Eine lokale Next.js-/Node.js-Demonstrationsanwendung für interne Beraterteams. Sie verbindet Kundenkontext, AI-Auswirkungen auf Wertschöpfung, Gesprächsführung und strategische Optionen mit einem ersten Enterprise-AI-Portfolio, Finanzrahmen und Sechs-Wochen-Plan.
 
+## Laufende Web-Demo
+
+[AI Strategy Studio auf GitHub Pages öffnen](https://credo1121.github.io/AI-Strategy_Governance_Roadmap/)
+
+[![Deploy GitHub Pages](https://github.com/Credo1121/AI-Strategy_Governance_Roadmap/actions/workflows/pages.yml/badge.svg)](https://github.com/Credo1121/AI-Strategy_Governance_Roadmap/actions/workflows/pages.yml)
+
+Die Pages-Version ist eine öffentliche Browser-Demo mit ausschließlich synthetischen Daten. Änderungen werden nur im `localStorage` des verwendeten Browsers gespeichert und nicht mit anderen Nutzern oder Geräten geteilt. Browserdaten können jederzeit gelöscht werden. Bitte keine vertraulichen Kunden- oder Unternehmensdaten eingeben.
+
 ## Enthalten
 
 - Synthetischer Konzernarchetyp und Mittelstandsprofil; eigene Demoakten anlegen.
@@ -32,6 +40,12 @@ npm start
 
 `Ctrl+C` beendet beide Dienste. Die Datenbank liegt unter `.data/demo.sqlite` und wird beim ersten Start mit Demoakten initialisiert; bestehende Akten werden nicht zurückgesetzt. Arbeitsdaten, Build-Ausgaben und Dependencies sind ignoriert. Die npm-Cache-Einstellung ist auf diese Cloud-Umgebung ausgerichtet; außerhalb von `/workspace` bei Bedarf `npm ci --cache .data/npm-cache` verwenden.
 
+Der lokale Modus verwendet den Node.js-Service und SQLite. Der GitHub-Pages-Workflow erzeugt dagegen einen statischen Next.js-Export mit Browserpersistenz:
+
+```sh
+STATIC_EXPORT=1 NEXT_PUBLIC_STATIC_DEMO=1 npm run build
+```
+
 ## Prüfen
 
 ```sh
@@ -41,7 +55,7 @@ npm run build
 npm audit --omit=dev
 ```
 
-Die API-Tests verwenden eigene temporäre SQLite-Datenbanken. Browserkernreise bei gestarteter App: `python3 scripts/verify_app.py` (Python, Playwright und `/usr/bin/chromium`; in dieser Umgebung vorhanden). Sie erstellt synthetische QA-Akten und speichert aktuelle Screenshots unter `docs/evidence/REQ-003`. Sie berührt keine Antworten der beiden Ausgangsakten. Prüfberichte: [REQ-002](docs/qa/REQ-002.md) und [REQ-003](docs/qa/REQ-003.md).
+Die API-Tests verwenden eigene temporäre SQLite-Datenbanken. Browserkernreise bei gestarteter App: `python3 scripts/verify_app.py` (Python, Playwright und `/usr/bin/chromium`; in dieser Umgebung vorhanden). Sie erstellt synthetische QA-Akten und speichert aktuelle Screenshots unter `docs/evidence/REQ-003`. Der statische Pages-Build wird mit `scripts/verify_pages.py` unter dem echten Repository-Unterpfad geprüft. Prüfberichte: [REQ-002](docs/qa/REQ-002.md), [REQ-003](docs/qa/REQ-003.md) und [REQ-004](docs/qa/REQ-004.md).
 
 ## Grenzen und nächste Ausbaustufen
 

@@ -1,0 +1,11 @@
+{
+  "results": [
+    "PASS: statische Demo geladen, neue Akte im Browser gespeichert und nach Reload wiederhergestellt",
+    "PASS: Markdown-Export ohne Backend als Browserdownload erzeugt",
+    "PASS: keine /api-Netzwerkanfrage im Pages-Modus",
+    "PASS: Pages-Artefakt Desktop und 390 px Mobile ohne horizontalen Seitenüberlauf"
+  ],
+  "errors": [],
+  "timestamp_utc": "2026-10-12T09:14:13.636856+00:00",
+  "base_url": "http://127.0.0.1:4173/AI-Strategy_Governance_Roadmap/"
+}

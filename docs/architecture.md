@@ -23,3 +23,9 @@ Methodisches Risiko: globale Praxisbefragung nicht DAX-repräsentativ; Beratungs
 Portfolioinitiativen und Finanzrahmen erweitern die bestehende versionierte Beratungsakte. Der gleiche atomare Revisionsschutz umfasst damit Strategie, Portfolio und Finance; eine konkurrierende Änderung überschreibt keinen Teilstand. SQLite-Migration v2 ergänzt vorhandene JSON-Akten additiv. Bestehende Strategieoptionen werden als nachvollziehbare Startinitiativen migriert; neue Akten erhalten den vollständigen Vertrag.
 
 Gebundene Mittel und nächste Tranchen werden im Frontend und Export aus den Initiativen summiert. Target, Budget, Rolling Forecast und Ist-Kosten bleiben dokumentierte Eingaben. Abweichungen erzeugen einen Gesprächshinweis, keine Sperre oder automatische Freigabe. Architekturentscheidung ADR-003; Grenzen für reale Finanzdaten, Rechte, Audit-Log und Dezimalbuchungen bleiben offen.
+
+## REQ-004 — GitHub Pages
+
+Der Pages-Build setzt `output: export`, den Repository-`basePath` und einen ausschließlich im Browser ausgeführten Demo-Adapter. Derselbe Client-Workspace verwendet im lokalen Modus weiterhin die HTTP-API und im statischen Modus validierte Seeddaten plus `localStorage`. Der Modus ist über eine Buildvariable festgelegt und sichtbar gekennzeichnet; es gibt keinen stillen Laufzeit-Fallback von einem ausgefallenen Backend auf Browserdaten.
+
+GitHub Actions installiert aus dem Lockfile, führt Typecheck und Integrationstests aus, baut das statische Artefakt und übergibt es mit den offiziellen Pages-Actions. Vertrauensgrenze: Pages ist öffentlich; Browserdaten verlassen den Client nicht, besitzen aber keine Teamfreigabe, serverseitige Autorisierung, Sicherung oder Konfliktkontrolle. Entscheidung ADR-004.
