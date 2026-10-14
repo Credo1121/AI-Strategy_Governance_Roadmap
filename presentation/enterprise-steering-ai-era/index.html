@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Enterprise steering in the AI era</title>
+  <style>
+    :root {
+      --paper: #f7f8fa;
+      --ink: #10263a;
+      --muted: #587082;
+      --teal: #087f8c;
+      --teal-soft: #dceff1;
+      --teal-pale: #edf7f7;
+      --line: #d7dee5;
+      --amber: #b66d16;
+      --amber-soft: #f7ead9;
+      --white: #ffffff;
+      --scale: 1;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
+    body {
+      overflow: hidden;
+      background: #182633;
+      color: var(--ink);
+      font-family: Aptos, Arial, Helvetica, sans-serif;
+    }
+    button, a { font: inherit; }
+    button:focus-visible, a:focus-visible {
+      outline: 4px solid #f7b955;
+      outline-offset: 4px;
+    }
+
+    .viewport {
+      position: relative;
+      width: 100vw;
+      height: calc(100vh - 68px);
+      overflow: hidden;
+    }
+    .stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1920px;
+      height: 1080px;
+      transform: translate(-50%, -50%) scale(var(--scale));
+      transform-origin: center;
+    }
+    .slide {
+      display: none;
+      position: absolute;
+      inset: 0;
+      width: 1920px;
+      height: 1080px;
+      padding: 72px 100px 62px;
+      overflow: hidden;
+      background: var(--paper);
+    }
+    .slide[aria-hidden="false"] { display: block; }
+    .slide::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 16px;
+      height: 100%;
+      background: var(--teal);
+    }
+    .eyebrow {
+      margin: 0 0 16px;
+      color: var(--teal);
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+    h1 {
+      max-width: 1590px;
+      margin: 0;
+      color: var(--ink);
+      font-size: 62px;
+      font-weight: 650;
+      letter-spacing: -.035em;
+      line-height: 1.06;
+    }
+    .subtitle {
+      margin: 15px 0 0;
+      color: var(--muted);
+      font-size: 30px;
+      line-height: 1.28;
+    }
+    .slide-number {
+      position: absolute;
+      right: 100px;
+      top: 80px;
+      color: var(--muted);
+      font-size: 23px;
+      font-variant-numeric: tabular-nums;
+    }
+    .content { position: absolute; left: 100px; right: 100px; top: 245px; bottom: 170px; }
+    .source {
+      position: absolute;
+      left: 100px;
+      right: 100px;
+      bottom: 57px;
+      padding-top: 14px;
+      border-top: 2px solid var(--line);
+      color: #53697a;
+      font-size: 19px;
+      line-height: 1.3;
+    }
+    .source a { color: #315d6b; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .takeaway {
+      position: absolute;
+      left: 100px;
+      right: 100px;
+      bottom: 102px;
+      color: var(--ink);
+      font-size: 27px;
+      font-weight: 650;
+      line-height: 1.2;
+    }
+    .takeaway::before { content: ""; display: inline-block; width: 30px; height: 5px; margin: 0 15px 6px 0; background: var(--teal); }
+    .model-label {
+      display: inline-block;
+      padding: 7px 12px;
+      border: 2px solid var(--teal);
+      color: var(--teal);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    /* Slide 1 */
+    .evidence-grid { display: grid; grid-template-columns: 1.03fr .97fr; gap: 88px; }
+    .panel-heading { margin: 0 0 27px; color: var(--ink); font-size: 26px; font-weight: 700; }
+    .bars { padding: 28px 34px 22px; border: 2px solid var(--line); background: var(--white); }
+    .bar-row { display: grid; grid-template-columns: 205px 1fr 82px; gap: 18px; align-items: center; margin: 40px 0; }
+    .bar-label { color: var(--ink); font-size: 25px; font-weight: 650; line-height: 1.16; }
+    .track { position: relative; height: 42px; background: #e5eaee; }
+    .fill { height: 100%; background: var(--teal); }
+    .bar-row.secondary .fill { background: #89a6ad; }
+    .bar-value { color: var(--ink); font-size: 34px; font-weight: 750; text-align: right; }
+    .axis { position: relative; margin: 8px 100px 0 223px; height: 38px; border-top: 2px solid #8799a6; }
+    .axis span { position: absolute; top: 8px; color: var(--muted); font-size: 18px; }
+    .axis .zero { left: 0; }
+    .axis .fifty { left: 50%; transform: translateX(-50%); }
+    .axis .hundred { right: 0; }
+    .metric-note { margin: 17px 0 0; color: var(--muted); font-size: 21px; line-height: 1.35; }
+    .implications { padding-top: 12px; }
+    .implications h2 { margin: 20px 0 22px; font-size: 33px; line-height: 1.15; }
+    .implication { display: grid; grid-template-columns: 48px 1fr; gap: 18px; padding: 22px 0; border-top: 2px solid var(--line); }
+    .implication:last-of-type { border-bottom: 2px solid var(--line); }
+    .implication b { display: grid; place-items: center; width: 42px; height: 42px; background: var(--teal-soft); color: var(--teal); font-size: 22px; }
+    .implication p { margin: 1px 0 0; font-size: 27px; line-height: 1.3; }
+    .caveat { margin: 19px 0 0; padding-left: 17px; border-left: 5px solid var(--amber); color: #73501f; font-size: 20px; line-height: 1.35; }
+
+    /* Slide 2 */
+    .decision-table { width: 100%; border-collapse: collapse; table-layout: fixed; background: var(--white); }
+    .decision-table col:nth-child(1) { width: 22%; }
+    .decision-table col:nth-child(2) { width: 35%; }
+    .decision-table col:nth-child(3) { width: 43%; }
+    .decision-table th { padding: 18px 24px; border-bottom: 4px solid var(--teal); color: var(--ink); font-size: 23px; text-align: left; }
+    .decision-table th:nth-child(2) { color: var(--muted); font-weight: 550; }
+    .decision-table th:nth-child(3) { background: var(--teal-pale); }
+    .decision-table td { padding: 21px 24px; border-bottom: 2px solid var(--line); font-size: 25px; line-height: 1.25; vertical-align: middle; }
+    .decision-table td:first-child { color: var(--ink); font-size: 27px; font-weight: 700; }
+    .decision-table td:nth-child(2) { color: #647988; }
+    .decision-table td:nth-child(3) { border-left: 4px solid var(--teal); background: var(--teal-pale); color: var(--ink); font-weight: 600; }
+
+    /* Slide 3 */
+    .operating-layout { display: grid; grid-template-columns: 1fr 255px; grid-template-rows: 1fr auto auto; gap: 15px 34px; height: 100%; }
+    .levels { display: grid; grid-template-rows: repeat(3, 1fr); gap: 15px; }
+    .level { display: grid; grid-template-columns: 220px 1fr 1fr; align-items: center; min-height: 126px; border: 2px solid var(--line); background: var(--white); }
+    .level-name { align-self: stretch; display: grid; place-items: center start; padding: 24px; background: var(--ink); color: var(--white); font-size: 29px; font-weight: 700; }
+    .level:nth-child(2) .level-name { background: #1b5967; }
+    .level:nth-child(3) .level-name { background: var(--teal); }
+    .level-cell { padding: 20px 28px; border-left: 2px solid var(--line); }
+    .level-cell small { display: block; margin-bottom: 8px; color: var(--teal); font-size: 18px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .level-cell p { margin: 0; font-size: 24px; line-height: 1.25; }
+    .flows { position: relative; border-left: 2px solid var(--line); }
+    .flows svg { width: 100%; height: 100%; overflow: visible; }
+    .foundation { grid-column: 1 / -1; display: flex; align-items: center; gap: 22px; margin-top: 15px; padding: 18px 26px; background: #e8edf1; color: var(--ink); font-size: 22px; line-height: 1.25; }
+    .foundation strong { flex: 0 0 auto; color: var(--teal); text-transform: uppercase; letter-spacing: .05em; }
+    .context-caveat { grid-column: 1 / -1; margin: 0; color: var(--muted); font-size: 20px; }
+
+    /* Slide 4 */
+    .cadence-layout { display: grid; grid-template-columns: 1.18fr .82fr; gap: 62px; }
+    .annual-frame { padding: 20px 28px; border: 3px solid var(--ink); background: var(--white); }
+    .annual-frame h2, .glossary h2 { margin: 0 0 7px; font-size: 26px; }
+    .annual-frame p { margin: 0; color: var(--muted); font-size: 22px; line-height: 1.25; }
+    .cycle-wrap { position: relative; height: 344px; margin-top: 24px; }
+    .cycle-wrap svg { width: 100%; height: 100%; }
+    .exception-box { position: absolute; left: 8px; bottom: 4px; width: 265px; padding: 15px 18px; border-left: 6px solid var(--amber); background: var(--amber-soft); }
+    .exception-box strong { display: block; margin-bottom: 5px; color: #82501b; font-size: 20px; }
+    .exception-box span { color: #6f532f; font-size: 17px; line-height: 1.23; }
+    .glossary { padding: 26px 30px; border: 2px solid var(--line); background: var(--white); }
+    .glossary-row { display: grid; grid-template-columns: 180px 1fr; gap: 20px; padding: 20px 0; border-top: 2px solid var(--line); }
+    .glossary-row strong { color: var(--teal); font-size: 24px; }
+    .glossary-row span { font-size: 23px; line-height: 1.25; }
+    .authority-note { margin: 20px 0 0; padding: 15px 18px; border: 2px solid var(--amber); color: #724818; font-size: 20px; font-weight: 650; line-height: 1.3; }
+
+    /* Slide 5 */
+    .lifecycle { display: grid; grid-template-columns: repeat(4, 1fr); gap: 17px; }
+    .stage-card { position: relative; min-height: 250px; padding: 24px 24px 20px; border-top: 8px solid var(--teal); background: var(--white); }
+    .stage-card:not(:last-child)::after { content: "›"; position: absolute; right: -17px; top: 87px; z-index: 2; color: var(--teal); font-size: 56px; font-weight: 300; line-height: 1; }
+    .stage-card .step { color: var(--teal); font-size: 18px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .stage-card h2 { margin: 8px 0 13px; font-size: 31px; }
+    .stage-card p { margin: 0; color: #30495b; font-size: 22px; line-height: 1.34; }
+    .case-strip { margin-top: 27px; padding: 18px 24px 22px; border: 2px solid var(--line); background: #edf1f4; }
+    .case-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .case-title h2 { margin: 0; font-size: 25px; }
+    .case-title span { color: var(--muted); font-size: 18px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    .case-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .case-item { padding: 0 23px; border-left: 2px solid #c4ced6; }
+    .case-item:first-child { padding-left: 0; border-left: 0; }
+    .case-item strong { display: block; margin-bottom: 6px; color: var(--teal); font-size: 23px; }
+    .case-item p { margin: 0; font-size: 20px; line-height: 1.27; }
+    .closing { margin: 21px 0 0; color: var(--ink); font-size: 29px; font-weight: 700; text-align: center; }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      height: 68px;
+      padding: 8px 20px;
+      background: #101b25;
+      color: #f4f7f8;
+    }
+    .controls button {
+      min-width: 48px;
+      min-height: 44px;
+      padding: 8px 15px;
+      border: 1px solid #667681;
+      border-radius: 3px;
+      background: #21313e;
+      color: #fff;
+      cursor: pointer;
+    }
+    .controls button:hover { background: #314858; }
+    .controls button:disabled { opacity: .38; cursor: default; }
+    .counter { min-width: 76px; color: #dce4e8; font-variant-numeric: tabular-nums; text-align: center; }
+    .status { position: absolute; left: 24px; bottom: 22px; max-width: 36vw; color: #cbd6dc; font-size: 14px; }
+
+    .notes {
+      position: fixed;
+      inset: 0 0 68px auto;
+      z-index: 10;
+      width: min(680px, 48vw);
+      padding: 42px 48px;
+      overflow: auto;
+      border-left: 4px solid var(--teal);
+      background: rgba(247, 248, 250, .98);
+      box-shadow: -20px 0 55px rgba(0, 0, 0, .25);
+      color: var(--ink);
+    }
+    .notes[hidden] { display: none; }
+    .notes-head { display: flex; align-items: start; justify-content: space-between; gap: 20px; border-bottom: 2px solid var(--line); }
+    .notes h2 { margin: 0 0 22px; font-size: 31px; }
+    .notes button { padding: 7px 12px; border: 1px solid var(--line); background: var(--white); cursor: pointer; }
+    .notes-body { padding-top: 12px; }
+    .notes-body p { font-size: 19px; line-height: 1.5; }
+    .notes-body .question { margin-top: 26px; padding: 17px 19px; border-left: 5px solid var(--teal); background: var(--teal-pale); font-weight: 650; }
+    .notes-body .transition { color: var(--muted); font-style: italic; }
+
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behaviour: auto !important; transition: none !important; } }
+
+    @page { size: 13.333in 7.5in; margin: 0; }
+    @media print {
+      html, body { width: auto; height: auto; overflow: visible; background: #fff; }
+      .viewport { width: auto; height: auto; overflow: visible; }
+      .stage { position: static; width: auto; height: auto; transform: none; }
+      .slide, .slide[aria-hidden="true"], .slide[aria-hidden="false"] {
+        display: block !important;
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        break-after: page;
+        page-break-after: always;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+        zoom: .66665;
+      }
+      .slide:last-child { break-after: auto; page-break-after: auto; }
+      .controls, .notes { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="viewport" aria-label="Enterprise steering in the AI era presentation">
+    <div class="stage" id="stage">
+      <section class="slide" id="slide-1" data-title="AI raises the cost of slow investment adaptation" aria-hidden="false">
+        <p class="eyebrow">Evidence and management thesis</p>
+        <h1>AI raises the cost of slow investment adaptation</h1>
+        <p class="subtitle">Product teams need funding and decision rights that can respond to new evidence.</p>
+        <span class="slide-number">01</span>
+        <div class="content evidence-grid">
+          <div>
+            <p class="panel-heading">Fundamental workflow redesign reported by</p>
+            <div class="bars" role="img" aria-label="55 per cent of AI high performers and 20 per cent of other respondents reported fundamental workflow redesign">
+              <div class="bar-row">
+                <div class="bar-label">AI high<br>performers</div>
+                <div class="track"><div class="fill" style="width:55%"></div></div>
+                <div class="bar-value">55%</div>
+              </div>
+              <div class="bar-row secondary">
+                <div class="bar-label">Other<br>respondents</div>
+                <div class="track"><div class="fill" style="width:20%"></div></div>
+                <div class="bar-value">20%</div>
+              </div>
+              <div class="axis" aria-hidden="true"><span class="zero">0</span><span class="fifty">50</span><span class="hundred">100%</span></div>
+              <p class="metric-note">Share of respondents reporting fundamental redesign of workflows</p>
+            </div>
+          </div>
+          <div class="implications">
+            <span class="model-label">Our interpretation</span>
+            <h2>Steering implications</h2>
+            <div class="implication"><b>1</b><p>Revisit value and quality assumptions as solutions evolve.</p></div>
+            <div class="implication"><b>2</b><p>Redirect funding and usable capacity when priorities change.</p></div>
+            <div class="implication"><b>3</b><p>Assign ownership of benefits beyond technical delivery.</p></div>
+            <p class="caveat">Correlational, self-reported evidence. The chart does not measure investment speed or EPM effectiveness.</p>
+          </div>
+        </div>
+        <p class="takeaway">Product orientation and investment governance need to evolve together.</p>
+        <footer class="source"><a href="https://www.mckinsey.com/~/media/mckinsey/business%20functions/quantumblack/our%20insights/the%20state%20of%20ai/november%202025/the-state-of-ai-2025-agents-innovation_cmyk-v1.pdf" target="_blank" rel="noreferrer">McKinsey, State of AI 2025, Exhibit 11</a>. Self-reported, correlational evidence. Implications: our synthesis.</footer>
+      </section>
+
+      <section class="slide" id="slide-2" data-title="Adaptive steering changes four management decisions" aria-hidden="true">
+        <p class="eyebrow">Decision model · Proposed management synthesis</p>
+        <h1>Adaptive steering changes four management decisions</h1>
+        <p class="subtitle">The shift concerns how investments are selected, funded and reviewed.</p>
+        <span class="slide-number">02</span>
+        <div class="content">
+          <table class="decision-table">
+            <colgroup><col><col><col></colgroup>
+            <thead><tr><th>Decision</th><th>Starting pattern to examine</th><th>Proposed steering principle</th></tr></thead>
+            <tbody>
+              <tr><td>What to fund</td><td>Individual requests and local priorities</td><td>Strategic outcomes, portfolio trade-offs and dependencies</td></tr>
+              <tr><td>How to fund</td><td>Full scope approved before sufficient evidence</td><td>Bounded experiments and explicit scaling decisions</td></tr>
+              <tr><td>Who decides</td><td>Routine changes wait for central approval</td><td>Delegated authority within financial and risk limits</td></tr>
+              <tr><td>What to review</td><td>Spend and delivery milestones dominate</td><td>Realised value, total cost, quality and risk</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="takeaway">Flexibility requires explicit mandates and disciplined reviews.</p>
+        <footer class="source">Proposed management synthesis. Conceptual references: <a href="https://framework.scaledagile.com/lean-budgets" target="_blank" rel="noreferrer">SAFe Lean Budgets</a> and <a href="https://framework.scaledagile.com/portfolio" target="_blank" rel="noreferrer">Portfolio</a>; <a href="https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf" target="_blank" rel="noreferrer">NIST AI RMF</a>. [S2–S4]</footer>
+      </section>
+
+      <section class="slide" id="slide-3" data-title="A common investment logic connects enterprise direction with local autonomy" aria-hidden="true">
+        <p class="eyebrow">Operating model · Proposed model</p>
+        <h1>A common investment logic connects enterprise direction with local autonomy</h1>
+        <p class="subtitle">Decision scope determines the steering level.</p>
+        <span class="slide-number">03</span>
+        <div class="content">
+          <div class="operating-layout">
+            <div class="levels">
+              <div class="level"><div class="level-name">Enterprise</div><div class="level-cell"><small>Decision scope</small><p>Strategic priorities, investment envelopes and cross-portfolio trade-offs</p></div><div class="level-cell"><small>Accountability</small><p>Overall allocation and enterprise outcomes</p></div></div>
+              <div class="level"><div class="level-name">Portfolio</div><div class="level-cell"><small>Decision scope</small><p>Priorities, dependencies and capacity within the mandate</p></div><div class="level-cell"><small>Accountability</small><p>Portfolio outcomes and investment performance</p></div></div>
+              <div class="level"><div class="level-name">Product</div><div class="level-cell"><small>Decision scope</small><p>Discovery, delivery and operation within agreed limits</p></div><div class="level-cell"><small>Accountability</small><p>Product outcomes and operational performance</p></div></div>
+            </div>
+            <div class="flows" aria-label="Downward strategic intent, funding and mandates; upward outcome evidence, forecast changes and exceptions">
+              <svg viewBox="0 0 255 410" role="img" aria-labelledby="flow-title flow-desc">
+                <title id="flow-title">Two-way steering flows</title><desc id="flow-desc">Mandates flow down while evidence and exceptions flow up.</desc>
+                <defs><marker id="arrow-teal" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#087f8c"/></marker><marker id="arrow-ink" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#10263a"/></marker></defs>
+                <text x="65" y="24" fill="#10263a" font-size="18" font-weight="700" text-anchor="middle">DOWNWARD</text>
+                <line x1="66" y1="49" x2="66" y2="354" stroke="#10263a" stroke-width="5" marker-end="url(#arrow-ink)"/>
+                <text x="40" y="205" fill="#10263a" font-size="18" text-anchor="middle" transform="rotate(-90 40 205)">Intent · funding · mandates</text>
+                <text x="190" y="391" fill="#087f8c" font-size="18" font-weight="700" text-anchor="middle">UPWARD</text>
+                <line x1="189" y1="354" x2="189" y2="49" stroke="#087f8c" stroke-width="5" marker-end="url(#arrow-teal)"/>
+                <text x="215" y="205" fill="#087f8c" font-size="18" text-anchor="middle" transform="rotate(90 215 205)">Evidence · forecasts · exceptions</text>
+              </svg>
+            </div>
+            <div class="foundation"><strong>Shared foundation</strong><span>Finance and cost transparency · architecture and data dependencies · AI quality and risk controls</span></div>
+            <p class="context-caveat">Context matters: add a steering layer only when it improves decisions across boundaries; levels need not be separate organisational units.</p>
+          </div>
+        </div>
+        <p class="takeaway">Add a steering layer only when it improves decisions across boundaries.</p>
+        <footer class="source">Proposed operating model, informed by <a href="https://framework.scaledagile.com/portfolio" target="_blank" rel="noreferrer">SAFe Portfolio</a>. Adapt to organisational scale and dependencies. [S3]</footer>
+      </section>
+
+      <section class="slide" id="slide-4" data-title="Annual commitments and in-year adaptation require separate decision rules" aria-hidden="true">
+        <p class="eyebrow">Funding cadence · Proposed model</p>
+        <h1>Annual commitments and in-year adaptation require separate decision rules</h1>
+        <p class="subtitle">A revised forecast informs a decision; it does not authorise spending.</p>
+        <span class="slide-number">04</span>
+        <div class="content cadence-layout">
+          <div>
+            <div class="annual-frame"><h2>Annual and multi-year frame</h2><p>Strategic outcomes, investment envelopes, obligations and delegation limits</p></div>
+            <div class="cycle-wrap">
+              <svg viewBox="0 0 950 344" role="img" aria-labelledby="cycle-title cycle-desc">
+                <title id="cycle-title">Recurring in-year investment review</title><desc id="cycle-desc">Assess outcomes and forecast, decide, record the decision and update the plan. Material exceptions can trigger an earlier review.</desc>
+                <defs><marker id="cycle-arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#087f8c"/></marker></defs>
+                <path d="M375 67 C625 2 850 103 798 227 C754 331 532 330 391 266" fill="none" stroke="#087f8c" stroke-width="8" marker-end="url(#cycle-arrow)"/>
+                <path d="M394 265 C261 223 256 116 375 67" fill="none" stroke="#087f8c" stroke-width="8" marker-end="url(#cycle-arrow)"/>
+                <circle cx="477" cy="155" r="96" fill="#fff" stroke="#d7dee5" stroke-width="3"/>
+                <text x="477" y="130" fill="#087f8c" font-size="21" font-weight="700" text-anchor="middle">IN-YEAR REVIEW</text>
+                <text x="477" y="164" fill="#10263a" font-size="24" font-weight="700" text-anchor="middle">Continue · scale</text>
+                <text x="477" y="196" fill="#10263a" font-size="24" font-weight="700" text-anchor="middle">reallocate · stop</text>
+                <text x="727" y="82" fill="#10263a" font-size="20" font-weight="700" text-anchor="middle">Assess outcomes</text><text x="727" y="108" fill="#587082" font-size="18" text-anchor="middle">and forecast</text>
+                <text x="708" y="293" fill="#10263a" font-size="20" font-weight="700" text-anchor="middle">Record decision</text><text x="708" y="318" fill="#587082" font-size="18" text-anchor="middle">and update plan</text>
+                <line x1="271" y1="309" x2="349" y2="248" stroke="#b66d16" stroke-width="5" marker-end="url(#cycle-arrow)"/>
+              </svg>
+              <div class="exception-box"><strong>Exception trigger</strong><span>Material value change, capacity constraint, cost deviation or risk-limit breach</span></div>
+            </div>
+          </div>
+          <div class="glossary">
+            <h2>Financial concepts</h2>
+            <div class="glossary-row"><strong>Target</strong><span>Agreed performance objective</span></div>
+            <div class="glossary-row"><strong>Forecast</strong><span>Current expectation</span></div>
+            <div class="glossary-row"><strong>Actuals</strong><span>Recorded results to date</span></div>
+            <div class="glossary-row"><strong>Spending authority</strong><span>Approved permission to commit or spend</span></div>
+            <p class="authority-note">Forecast ≠ spending authority. Budget and capacity changes require explicit authorisation and feasible execution.</p>
+          </div>
+        </div>
+        <p class="takeaway">Budget changes and capacity changes need explicit authorisation and feasible execution.</p>
+        <footer class="source">Proposed cadence. Conceptual reference: <a href="https://framework.scaledagile.com/lean-budgets" target="_blank" rel="noreferrer">SAFe Lean Budgets</a>. Financial terminology and approvals must follow company policy. [S2]</footer>
+      </section>
+
+      <section class="slide" id="slide-5" data-title="Funding should follow evidence across the AI lifecycle" aria-hidden="true">
+        <p class="eyebrow">Investment evidence · Proposed framework</p>
+        <h1>Funding should follow evidence across the AI lifecycle</h1>
+        <p class="subtitle">Delivery evidence becomes investment evidence when it addresses value, economics and risk.</p>
+        <span class="slide-number">05</span>
+        <div class="content">
+          <div class="lifecycle">
+            <div class="stage-card"><span class="step">Stage 1</span><h2>Explore</h2><p>Business problem, baseline, data feasibility and initial risk assessment</p></div>
+            <div class="stage-card"><span class="step">Stage 2</span><h2>Validate</h2><p>Quality in the intended workflow, user adoption and credible total-cost assumptions</p></div>
+            <div class="stage-card"><span class="step">Stage 3</span><h2>Scale</h2><p>Repeatable business outcomes, viable unit economics and operational controls</p></div>
+            <div class="stage-card"><span class="step">Stage 4</span><h2>Operate</h2><p>Realised benefits, cost and quality trends, incidents and ongoing fitness for use</p></div>
+          </div>
+          <div class="case-strip">
+            <div class="case-title"><h2>Illustrative AI service-assistance case</h2><span>Illustrative · no claimed result</span></div>
+            <div class="case-grid">
+              <div class="case-item"><strong>Value</strong><p>Handling time and service quality against a baseline</p></div>
+              <div class="case-item"><strong>Economics</strong><p>Total operating cost per resolved case, including human review and rework</p></div>
+              <div class="case-item"><strong>Risk</strong><p>Unacceptable outputs, sensitive-data exposure and defined intervention thresholds</p></div>
+            </div>
+          </div>
+          <p class="closing">Evidence should change investment commitments, not only reporting.</p>
+        </div>
+        <footer class="source">Proposed investment framework and illustrative case. Risk principles informed by <a href="https://nvlpubs.nist.gov/nistpubs/ai/nist.ai.100-1.pdf" target="_blank" rel="noreferrer">NIST AI RMF</a>. [S4]</footer>
+      </section>
+    </div>
+  </main>
+
+  <aside class="notes" id="notes" hidden aria-label="Presenter notes" aria-live="polite">
+    <div class="notes-head"><h2 id="notes-title">Presenter notes</h2><button type="button" id="close-notes" aria-label="Close presenter notes">Close</button></div>
+    <div class="notes-body" id="notes-body"></div>
+  </aside>
+
+  <nav class="controls" aria-label="Presentation controls">
+    <span class="status" id="status" role="status" aria-live="polite"></span>
+    <button type="button" id="previous" aria-label="Previous slide">←</button>
+    <span class="counter" id="counter" aria-live="polite">1 / 5</span>
+    <button type="button" id="next" aria-label="Next slide">→</button>
+    <button type="button" id="toggle-notes" aria-expanded="false" aria-controls="notes">Notes · N</button>
+    <button type="button" id="fullscreen">Fullscreen · F</button>
+  </nav>
+
+  <template id="notes-1">
+    <p>The chart concerns workflow redesign, not budget flexibility. It motivates examining the organisational conditions for AI value creation. It does not establish that a particular funding model causes performance. The slide title is our management thesis, not a measured result. “AI high performers” means respondents reporting significant AI value and more than 5% of EBIT attributable to AI. [S1]</p>
+    <p>This deck focuses on steering. Architecture, data, talent and adoption remain complementary requirements. AI does not create every steering problem: it can expose weaknesses already present in digital transformation.</p>
+    <p class="question"><strong>Discussion question:</strong> Can your organisation change its investment decisions as quickly as it learns?</p>
+    <p class="transition"><strong>Transition:</strong> The response starts with changing what management decisions are based on.</p>
+  </template>
+  <template id="notes-2">
+    <p>These are diagnostic patterns and design proposals. Large commitments may still be necessary for infrastructure, contracts, physical assets or regulatory programmes. Bounded experimentation should not delay essential commitments or bypass financial controls.</p>
+    <p>SAFe provides a reference for value-stream funding within approved portfolio budgets. NIST provides a reference for lifecycle risk management. Neither independently validates the entire four-row model.</p>
+    <p>Spending transparency, financial accountability and periodic reviews remain necessary. Delegation is a decision-rights arrangement, not an exemption from oversight.</p>
+    <p class="question"><strong>Discussion question:</strong> Which decision still follows a logic that conflicts with your way of delivering products?</p>
+    <p class="transition"><strong>Transition:</strong> These decisions must connect across enterprise, portfolio and product boundaries.</p>
+  </template>
+  <template id="notes-3">
+    <p>Enterprise Portfolio Management denotes a coordinating management capability here. A Digitalisation Board is a decision forum. Lean Portfolio Management provides practices for connecting strategy and execution within a portfolio. These are different types of concepts.</p>
+    <p>The three levels need not be separate organisational units. Smaller companies may combine them. A business-unit portfolio may be appropriate, but business-unit boundaries do not automatically represent end-to-end value streams. Assess cross-boundary dependencies and shared platforms before selecting the portfolio structure.</p>
+    <p>Finance retains its financial mandates. Architecture informs investment dependencies and shared prerequisites. Business owners remain accountable for benefit realisation, including process adoption. Teams require both the competence and the authority to make the delegated decisions.</p>
+    <p class="question"><strong>Discussion question:</strong> Which decisions genuinely need enterprise arbitration, and which can move closer to the work?</p>
+    <p class="transition"><strong>Transition:</strong> The operating model needs a rhythm that links annual commitment to in-year adaptation.</p>
+  </template>
+  <template id="notes-4">
+    <p>An example cadence is a quarterly investment review, with earlier reviews when a material exception occurs. This is a design choice, not a universal standard. The frequency should reflect investment risk, data availability and the speed at which a useful decision can be made.</p>
+    <p>Define who can reallocate within an envelope, who approves changes across portfolios and when Finance or other control functions must participate. A funding reserve does not create usable capacity by itself. Contracts, staffing and platform dependencies may constrain implementation.</p>
+    <p>Targets can be financial or operational. Forecasts can cover outcomes, cost and delivery. Actuals require consistent definitions. Spending authority is governed by the organisation's approval policy. This model does not prescribe accounting treatment or override mandatory controls.</p>
+    <p class="question"><strong>Discussion question:</strong> Who can approve a reallocation today, and what evidence do they require?</p>
+    <p class="transition"><strong>Transition:</strong> The most important review question is what evidence justifies the next investment commitment.</p>
+  </template>
+  <template id="notes-5">
+    <p>The stages are a management synthesis, not a mandatory delivery waterfall. Evidence gathering is iterative. The depth of review should reflect risk. Material changes in model, data, workflow or operating context may require revalidation at any stage.</p>
+    <p>Time savings are not automatically cash savings. An accountable business owner must explain whether released capacity improves throughput, service quality or other outcomes, or avoids expenditure. The same benefit must not be counted twice.</p>
+    <p>Compare the AI-assisted process with its baseline and assess total costs, including integration, platform use, evaluation, monitoring, human review, maintenance and change adoption. Do not assume automation increases the number of successfully resolved cases. Use case-level economics must include relevant shared costs with an explicit allocation method.</p>
+    <p>There are no invented numerical outcomes in this example. A pilot that cannot meet quality or risk thresholds should be modified or stopped even if the estimated financial return is attractive.</p>
+    <p class="question"><strong>Discussion question:</strong> What evidence would cause you to increase, redirect or stop funding?</p>
+  </template>
+
+  <script>
+    (() => {
+      'use strict';
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const stage = document.getElementById('stage');
+      const viewport = document.querySelector('.viewport');
+      const counter = document.getElementById('counter');
+      const previous = document.getElementById('previous');
+      const next = document.getElementById('next');
+      const notes = document.getElementById('notes');
+      const notesTitle = document.getElementById('notes-title');
+      const notesBody = document.getElementById('notes-body');
+      const toggleNotes = document.getElementById('toggle-notes');
+      const closeNotes = document.getElementById('close-notes');
+      const fullscreen = document.getElementById('fullscreen');
+      const status = document.getElementById('status');
+      let current = 0;
+
+      function hashIndex() {
+        const match = location.hash.match(/^#slide-(\d)$/);
+        const value = match ? Number(match[1]) - 1 : 0;
+        return Math.max(0, Math.min(slides.length - 1, value));
+      }
+
+      function scaleStage() {
+        const scale = Math.min(viewport.clientWidth / 1920, viewport.clientHeight / 1080);
+        stage.style.setProperty('--scale', String(scale));
+      }
+
+      function updateNotes() {
+        const template = document.getElementById(`notes-${current + 1}`);
+        notesTitle.textContent = `Presenter notes · ${current + 1} / ${slides.length}`;
+        notesBody.replaceChildren(template.content.cloneNode(true));
+      }
+
+      function show(index, updateHash = true) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides.forEach((slide, position) => slide.setAttribute('aria-hidden', position === current ? 'false' : 'true'));
+        counter.textContent = `${current + 1} / ${slides.length}`;
+        previous.disabled = current === 0;
+        next.disabled = current === slides.length - 1;
+        document.title = `${current + 1}/5 · ${slides[current].dataset.title}`;
+        if (updateHash && location.hash !== `#slide-${current + 1}`) history.replaceState(null, '', `#slide-${current + 1}`);
+        updateNotes();
+      }
+
+      function setNotes(open) {
+        notes.hidden = !open;
+        toggleNotes.setAttribute('aria-expanded', String(open));
+        if (open) closeNotes.focus(); else toggleNotes.focus();
+      }
+
+      async function setFullscreen() {
+        status.textContent = '';
+        try {
+          if (document.fullscreenElement) await document.exitFullscreen();
+          else if (document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
+          else status.textContent = 'Fullscreen is not supported by this browser.';
+        } catch (_) {
+          status.textContent = 'Fullscreen was not available. Presentation mode remains active.';
+        }
+      }
+
+      function isEditable(target) {
+        return target instanceof HTMLElement && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName));
+      }
+
+      previous.addEventListener('click', () => show(current - 1));
+      next.addEventListener('click', () => show(current + 1));
+      toggleNotes.addEventListener('click', () => setNotes(notes.hidden));
+      closeNotes.addEventListener('click', () => setNotes(false));
+      fullscreen.addEventListener('click', setFullscreen);
+      window.addEventListener('resize', scaleStage);
+      window.addEventListener('hashchange', () => show(hashIndex(), false));
+      document.addEventListener('fullscreenchange', () => { fullscreen.textContent = document.fullscreenElement ? 'Exit fullscreen · F' : 'Fullscreen · F'; scaleStage(); });
+      document.addEventListener('keydown', event => {
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || isEditable(event.target)) return;
+        if (event.key === 'Escape' && !notes.hidden) { event.preventDefault(); setNotes(false); return; }
+        const key = event.key.toLowerCase();
+        if (key === 'n') { event.preventDefault(); setNotes(notes.hidden); }
+        else if (key === 'f') { event.preventDefault(); setFullscreen(); }
+        else if (event.key === 'ArrowRight' || event.key === 'PageDown') { event.preventDefault(); show(current + 1); }
+        else if (event.key === 'ArrowLeft' || event.key === 'PageUp') { event.preventDefault(); show(current - 1); }
+        else if (event.key === 'Home') { event.preventDefault(); show(0); }
+        else if (event.key === 'End') { event.preventDefault(); show(slides.length - 1); }
+      });
+
+      scaleStage();
+      show(hashIndex(), false);
+    })();
+  </script>
+</body>
+</html>

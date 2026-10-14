@@ -65,4 +65,4 @@ Die vollständige wissenschaftliche Prüfung mehrerer Volltexte sowie echte verg
 
 Das ursprüngliche Produktziel bleibt bestehen: umfassende AI-Strategie, Roadmap und Enterprise-AI-Portfolio mit Governance, Finanzierung und laufender Steuerung. Der aktuelle Portfolio-/Finanzierungsslice ist ein Gesprächs- und Dokumentationsinstrument; Szenarien, Abhängigkeiten, Nutzenrealisierung, vertiefte Governance und spätere Produktionszusammenarbeit folgen. Details: [docs/backlog.md](docs/backlog.md).
 
-Die vorher erstellte HTML-Präsentation bleibt unter `presentation/` erhalten.
+Die HTML-Präsentationen bleiben unter `presentation/` erhalten. Neben dem deutschsprachigen AI-Strategie-/Portfolio-Deck liegt dort das eigenständige englische Fünf-Folien-Deck **Enterprise steering in the AI era** mit Bedienungsanleitung und Quellenregister.
